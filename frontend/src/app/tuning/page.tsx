@@ -13,32 +13,39 @@ export default function TuningPage() {
   const [loading, setLoading] = useState(false);
 
   const run = async () => {
-    setLoading(true);
-    setOutput(null);
+  setLoading(true);
+  setOutput(null);
 
-    let res;
+  let res: Response;
 
-    if (method === "prompt") {
-      res = await fetch("http://127.0.0.1:8000/tuning/prompt", {
+  if (method === "prompt") {
+    res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/tuning/prompt`,
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text, mode }),
-      });
-
-    } else if (method === "lora") {
-      res = await fetch("http://127.0.0.1:8000/tuning/lora/demo", {
+      }
+    );
+  } else if (method === "lora") {
+    res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/tuning/lora/demo`,
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: text }),
-      });
+      }
+    );
+  } else {
+    res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/tuning/finetune/explain`
+    );
+  }
 
-    } else {
-      res = await fetch("http://127.0.0.1:8000/tuning/finetune/explain");
-    }
+  setOutput(await res.json());
+  setLoading(false);
+};
 
-    setOutput(await res.json());
-    setLoading(false);
-  };
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-20 space-y-20">

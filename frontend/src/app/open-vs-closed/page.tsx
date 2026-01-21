@@ -12,14 +12,14 @@ export default function OpenVsClosed() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/model-comparison/")
-      .then((res) => res.json())
-      .then((d) => {
-        setData(d.comparison);
-        setScale(d.score_scale);
-        setLoading(false);
-      });
-  }, []);
+  fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/model-comparison/`)
+    .then((res) => res.json())
+    .then((d) => {
+      setData(d.comparison);
+      setScale(d.score_scale);
+      setLoading(false);
+    });
+}, []);
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-20 space-y-20">

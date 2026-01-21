@@ -16,11 +16,14 @@ export default function RLHFPage() {
     setLoading(true);
     setMessage("");
 
-    const res = await fetch("http://localhost:8000/rlhf/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt }),
-    });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/rlhf/generate`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      }
+    );
 
     const data = await res.json();
     setResponses(data.responses);
@@ -28,38 +31,43 @@ export default function RLHFPage() {
     setLoading(false);
   };
 
- const submitFeedback = async () => {
-  if (ranking.length !== 3) {
-    alert("Please rank all responses");
-    return;
-  }
+  const submitFeedback = async () => {
+    if (ranking.length !== 3) {
+      alert("Please rank all responses");
+      return;
+    }
 
-  await fetch("http://localhost:8000/rlhf/feedback", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt, responses, ranking }),
-  });
+    await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/rlhf/feedback`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, responses, ranking }),
+      }
+    );
 
-  setRanking([]); // reset UI state
-  setMessage("Human feedback stored. RLHF bias applied!");
-};
+    setRanking([]);
+    setMessage("Human feedback stored. RLHF bias applied!");
+  };
 
-const generateBiased = async () => {
-  setLoading(true);
-  setMessage("");
+  const generateBiased = async () => {
+    setLoading(true);
+    setMessage("");
 
-  const res = await fetch("http://localhost:8000/rlhf/generate_biased", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt }),
-  });
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/rlhf/generate_biased`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt }),
+      }
+    );
 
-  const data = await res.json();
-  setResponses(data.responses);
-  setRanking([]); // reset old ranks
-  setLoading(false);
-};
-
+    const data = await res.json();
+    setResponses(data.responses);
+    setRanking([]);
+    setLoading(false);
+  };
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-20 space-y-16">
@@ -85,7 +93,7 @@ const generateBiased = async () => {
         <button
           onClick={generate}
           disabled={loading}
-          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white"
+          className="inline-flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2 text-sm font-semibold text-white disabled:opacity-50"
         >
           <Sparkles className="w-4 h-4" />
           Generate 3 Responses

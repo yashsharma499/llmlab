@@ -37,37 +37,37 @@ export default function Playground() {
   const [loading, setLoading] = useState(false);
 
   const runModels = async () => {
-  if (!text.trim()) return;
+    if (!text.trim()) return;
 
-  setLoading(true);
+    setLoading(true);
 
-  try {
-    // ✅ Decoder (send BOTH text + task to satisfy schema)
-    const d = await fetch("http://127.0.0.1:8000/generate/decoder", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: text,
-        task: task, // required by schema even if unused
-      }),
-    }).then((r) => r.json());
+    try {
+      // ✅ Decoder
+      const d = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/generate/decoder`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, task }),
+        }
+      ).then((r) => r.json());
 
-    // ✅ Encoder-Decoder
-    const e = await fetch("http://127.0.0.1:8000/generate/encoder_decoder", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        text: text,
-        task: task,
-      }),
-    }).then((r) => r.json());
+      // ✅ Encoder-Decoder
+      const e = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/generate/encoder_decoder`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, task }),
+        }
+      ).then((r) => r.json());
 
-    setDecoderOut(d.output);
-    setEncoderOut(e.output);
-  } finally {
-    setLoading(false);
-  }
-};
+      setDecoderOut(d.output);
+      setEncoderOut(e.output);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-20 space-y-14">
@@ -97,12 +97,11 @@ export default function Playground() {
             <button
               key={t.value}
               onClick={() => setTask(t.value)}
-              className={`px-4 py-2 rounded-full text-sm border transition
-                ${
-                  task === t.value
-                    ? "bg-indigo-600 text-white border-indigo-500"
-                    : "border-white/15 text-slate-300 hover:bg-white/5"
-                }`}
+              className={`px-4 py-2 rounded-full text-sm border transition ${
+                task === t.value
+                  ? "bg-indigo-600 text-white border-indigo-500"
+                  : "border-white/15 text-slate-300 hover:bg-white/5"
+              }`}
             >
               {t.label}
             </button>
@@ -128,7 +127,6 @@ export default function Playground() {
             <h2 className="text-lg font-semibold">Decoder-Only Model</h2>
           </div>
 
-          {/* Scrollable Output */}
           <div className="flex-1 rounded-xl bg-black/30 border border-white/5 p-4 text-sm text-slate-300 whitespace-pre-wrap overflow-y-auto">
             {decoderOut || "Waiting for input..."}
           </div>
@@ -153,7 +151,6 @@ export default function Playground() {
             <h2 className="text-lg font-semibold">Encoder-Decoder Model</h2>
           </div>
 
-          {/* Scrollable Output */}
           <div className="flex-1 rounded-xl bg-black/30 border border-white/5 p-4 text-sm text-slate-300 whitespace-pre-wrap overflow-y-auto">
             {encoderOut || "Waiting for input..."}
           </div>

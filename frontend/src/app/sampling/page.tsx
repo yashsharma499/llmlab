@@ -30,10 +30,13 @@ export default function SamplingPage() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const runSampling = async () => {
-    if (!prompt.trim()) return;
-    setLoading(true);
-    try {
-      const res = await fetch("http://127.0.0.1:8000/sampling/run", {
+  if (!prompt.trim()) return;
+
+  setLoading(true);
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/sampling/run`,
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -42,15 +45,18 @@ export default function SamplingPage() {
           top_k: topK,
           top_p: topP,
         }),
-      });
-      const data: SamplingResult = await res.json();
-      setResult(data);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+      }
+    );
+
+    const data: SamplingResult = await res.json();
+    setResult(data);
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-[#020617] text-slate-100">

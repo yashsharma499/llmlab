@@ -26,7 +26,7 @@ export default function ArchitecturesPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/architectures")
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/architectures`)
       .then((res) => res.json())
       .then((fetchedData) => {
         setData(fetchedData);

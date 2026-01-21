@@ -14,16 +14,33 @@ export default function EvaluatePage() {
   const [loading, setLoading] = useState(false);
 
   async function run() {
-    setLoading(true);
-    const res = await fetch("http://127.0.0.1:8000/evaluate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ prompt, model, reference }),
-    });
-    const data = await res.json();
-    setGenerated(data.generated_output);
-    setResult(data);
-    setLoading(false);
+    try {
+      setLoading(true);
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/evaluate`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt, model, reference }),
+        }
+      );
+
+      if (!res.ok) {
+        throw new Error("Request failed");
+      }
+
+      const data: EvaluationResult & {
+        generated_output: string;
+      } = await res.json();
+
+      setGenerated(data.generated_output);
+      setResult(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -113,7 +130,9 @@ export default function EvaluatePage() {
         </div>
 
         <div className="glass-card rounded-2xl p-6 space-y-2">
-          <h3 className="font-semibold text-indigo-400">Semantic Similarity</h3>
+          <h3 className="font-semibold text-indigo-400">
+            Semantic Similarity
+          </h3>
           <p className="text-sm text-slate-400 leading-relaxed">
             Compares meaning using embeddings, even when wording is different.
             More reliable for open-ended generation.
@@ -122,7 +141,9 @@ export default function EvaluatePage() {
         </div>
 
         <div className="glass-card rounded-2xl p-6 space-y-2">
-          <h3 className="font-semibold text-indigo-400">Repetition Score</h3>
+          <h3 className="font-semibold text-indigo-400">
+            Repetition Score
+          </h3>
           <p className="text-sm text-slate-400 leading-relaxed">
             Penalizes repeated words or phrases. High repetition usually
             indicates low-quality or unstable output.
@@ -133,4 +154,3 @@ export default function EvaluatePage() {
     </div>
   );
 }
-

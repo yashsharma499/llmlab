@@ -25,14 +25,17 @@ export default function ContextPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://127.0.0.1:8000/context/analyze", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text,
-          model_name: model
-        }),
-      });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/context/analyze`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text,
+        model_name: model,
+      }),
+    }
+  );
       const data = await res.json();
       setResult(data);
     } catch (error) {
