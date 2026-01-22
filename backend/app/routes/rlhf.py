@@ -12,19 +12,16 @@ router = APIRouter(
 )
 
 
-# -------- Schemas --------
-
 class GenerateRequest(BaseModel):
     prompt: str
 
 
 class FeedbackRequest(BaseModel):
     prompt: str
-    responses: list[str]     # 3 generated responses
-    ranking: list[int]       # best → worst (e.g. [2,0,1])
+    responses: list[str]     
+    ranking: list[int]       
 
 
-# -------- Routes --------
 
 @router.post("/generate")
 def generate_initial(req: GenerateRequest):

@@ -2,7 +2,6 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from app.services.prompt_tuning import run_prompt_tuning
 
-# OPTIONAL LoRA demo imports
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, get_peft_model
 import torch
@@ -127,9 +126,6 @@ def lora_demo(req: LoraRequest):
     }
 
 
-# -----------------------------
-# 6️⃣ Unified Comparison (VERY IMPORTANT)
-# -----------------------------
 @router.get("/compare")
 def tuning_comparison():
     return [

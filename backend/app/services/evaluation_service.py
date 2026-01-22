@@ -7,7 +7,7 @@ from transformers import (
     AutoModelForCausalLM,
 )
 
-# Load models once
+
 flan_tok = AutoTokenizer.from_pretrained("google/flan-t5-small")
 flan_mod = AutoModelForSeq2SeqLM.from_pretrained("google/flan-t5-small")
 
